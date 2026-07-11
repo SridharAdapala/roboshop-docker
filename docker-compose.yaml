@@ -34,10 +34,6 @@ services:
     depends_on:
     - mongodb
     - redis
-  redis:
-    image: redis:7
-    container_name: redis
-
   cart:
     build: ./cart
     image: joindevops/cart:v1
@@ -49,6 +45,16 @@ services:
     depends_on:
      - redis
      - catalogue
+  redis:
+    image: redis:7
+    container_name: redis
+  mysql:
+    image: joindevops/mysql:v1
+    build: ./mysql
+    container_name: mysql
+    command: --mysql-native-password=ON --innodb-lock_wait_timeout=120
+    environment:
+      MYSQL_ROOT_PASSWORD: "RoboShop@1"
 
 networks:
   default:
