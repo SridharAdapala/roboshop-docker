@@ -16,7 +16,7 @@ services:
     container_name: frontend
     ports:
     - "80:80"
-    depends_on
+    depends_on:
     - catalogue
 networks:
   default:
