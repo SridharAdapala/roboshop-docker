@@ -4,13 +4,15 @@ services:
     build: ./mongodb
     image: joindevops/mongodb:v1
     container_name: mongodb
+
   catalogue:
     build: ./catalogue
     image: joindevops/catalogue:v1
     container_name: catalogue
     depends_on:
     - mongodb
-    frontend:
+
+  frontend:
     build: ./frontend
     image: joindevops/frontend:v1
     container_name: frontend
@@ -18,6 +20,35 @@ services:
     - "80:80"
     depends_on:
     - catalogue
+    - user
+
+  user:
+    build: ./user
+    image: joindevops/user:v1
+    container_name: user
+    environment:
+      MONGO: true
+      REDIS_URL: 'redis://redis:6379'
+      MONGO_URL: "mongodb://mongodb:27017/users"
+    depends_on:
+    - mongodb
+    - redis
+  redis:
+    image: redis:7
+    container_name: redis
+
+  cart:
+    build: ./cart
+    image: joindevops/cart:v1
+    container_name: cart
+    environment:
+      REDIS_HOST: redis
+      CATALOGUE_HOST: catalogue
+      CATALOGUE_PORT: 8080
+    depends_on:
+     - redis
+     - catalogue
+
 networks:
   default:
     name: roboshop
